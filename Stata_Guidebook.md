@@ -1,6 +1,6 @@
 # Stata 基础应用
 
-**山东大学 政治学与公共管理学院 Larr**
+**山东大学 政治学与公共管理学院**
 
 本文旨在用最基础的方法，最不用理解的语言，带您使用常见的实证模型完成一套最为基本的定量实证研究程序。
 
@@ -15,10 +15,6 @@
 ### 0.1 定量的任务
 
 ### 0.2 杜绝技术主义
-
-想真正搞好社科研究，应当注重**方法论（methodology）**的理解，而不只是**研究方法（method）**的学习，否则很容易陷入**技术主义**的窠臼，导致不明白这些方法的哲学基础、最后往往只能是“觉得”“认为”式的研究一一这样的研究往往是经不起推敲的。
-
-个人之辞：是保持中国式的实证主义传统，坚定发展质性研究；还是追求社会科学研究独立化、专业化，崇尚科学范式，推动定量研究走深走实，这个问题仍然没有确切的答案，因为它们各自的任务不同，研究的问题不同（质性研究更强调在过程中产生，需要不断修正，一般是研究特殊性问题、过程性问题、描述性问题和解释性问题；定量研究事先确定，提出假设，后面证伪，一般是研究概括性问题、差异性问题、推断性问题、评价性问题和因果性问题），适用的情况不同，不存在冲突，更没有优劣。
 
 ## 1 基本定量实证研究程序
 
@@ -383,7 +379,7 @@ ologit 被解释变量 解释变量1 解释变量2 解释变量3
 omodel logit 被解释变量 解释变量1 解释变量2 解释变量3 // 推荐
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222180813017.png" alt="image-20231222180813017" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231435792.png" alt="image-20231223143521719" style="zoom:50%;" />
 
 因为因变量为5个类别，所以估计出4个截距（cut），截距参数值可以解释为临界点或需先达到哪个值才会进入到相应因变量的类别：
 
@@ -423,10 +419,10 @@ legend(label(1 标签1) label(2 标签2) label(3 标签3))
 - **模型评估**
 
 ```stata
-fitstat // 哪都可以用！神包！
+fitstat // 很多地方都可以用！神包！
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222191327974.png" alt="image-20231222191327974" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231433657.png" alt="image-20231223143341597" style="zoom:50%;" />
 
 fitstat外部命令几乎可以评价一切模型。主要使用AIC进行比较，AIC鼓励数据拟合的优良性但尽量避免出现过度拟合（Overfitting）的情况。所以优先考虑的模型应是AIC值最小的那一个。赤池信息量准则的方法是寻找可以最好地解释数据但包含最少自由参数的模型。
 
@@ -443,7 +439,7 @@ omodel logit 被解释变量 解释变量1 解释变量2 解释变量3
 
 平行性检验的原假设为**模型满足平行性**，因而如果P值大于0.05则说明模型接受原假设，即符合平行性假设。反之如果P值小于0.05则说明模型拒绝原假设，模型不满足平行性假设，brant检验与之相反。由上图可以看出确实完全不满足平行性假设。
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222183005992.png" alt="image-20231222183005992" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231435060.png" alt="image-20231223143555988" style="zoom:50%;" />
 
 omodel自带平行性检验。平行性检验的原假设为**模型满足平行性**，因而如果P值大于0.05则说明模型接受原假设，即符合平行性检验。反之如果P值小于0.05则说明模型拒绝原假设，模型不满足平行性检验。由上图可以看出确实完全不满足平行性假设。
 
@@ -600,7 +596,7 @@ xtunitroot ips 待检验变量, lags(aic #) demean
 // 带截距项，考虑扰动项存在自相关的情形，#取小于等于4的任意值
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231221214159536.png" alt="image-20231221214159536" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231436290.png" alt="image-20231223143630224" style="zoom: 67%;" />
 
 由检验结果可知，**t-bar统计量为-1.7146，大于1%显著性水平的临界值-2.450**，所以不能拒绝面板单位根的原假设（即面板存在单位根）。此外，统计量**Z-t-tilder-bar对应的P值为0.1206>0.05**，同样不能拒绝原假设。
 
@@ -722,7 +718,7 @@ xtcointtest pedroni 被解释变量 解释变量1 解释变量2 解释变量3, n
 *(2)ar(panels)意为该检验在异质面板数据的情况下进行；ar(same)意为该检验在同质面板数据的情况下进行，面板数据一般都是异质的
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231221223854210.png" alt="image-20231221223854210" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231437143.png" alt="image-20231223143701078" style="zoom:50%;" />
 
 上表汇报了 3 种不同的检验统计量，其中MP-t对应的 p 值大于 0.05，不能拒绝 “不存在协整关系” 的原假设，认为不存在协整关系。
 
@@ -826,7 +822,7 @@ xtset 面板变量 年份变量
 reghdfe 被解释变量 解释变量1 解释变量2 解释变量3, absorb(面板变量 年份变量) vce(cluster 面板变量)
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222000919547.png" alt="image-20231222000919547" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231437401.png" alt="image-20231223143746333" style="zoom:50%;" />
 
 针对双向固定效应（原假设：不存在双向固定效应）的F检验自动生成（最后一行），此处F检验对应的p值为0.4483>0.05，表示不存在双向固定效应。　
 
@@ -1014,7 +1010,7 @@ coefplot reg,keep(第n期 前第二期 前第一期 当期 后第一期 后第�
 // 用外部命令绘制多期动态效应图
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222100937343.png" alt="image-20231222100937343" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231438220.png" alt="image-20231223143819124" style="zoom:50%;" />
 
 双向固定效应回归结果如上，**观察前期结果是否显著**，在这里前第三期、前第二期、前第一期的p值均大于0.05，不显著、系数较小（相对）则满足了平行趋势假定。**再观察后期结果显著与否**，在这里后第一期p值为0.003<0.01，结果显著，产生了明显的负效应（系数值为-7.15e+09）。
 
@@ -1155,8 +1151,6 @@ synth 被解释变量 解释变量1 解释变量2 解释变量3 解释变量4 �
 
 有很多的**可分组**的变量，尤其是一些客观条件、环境上**容易带来显著异质性的变量**，作为**控制变量**。比如下图想要考察努力程度与绩点的关系，控制变量有宿舍、班级和年级。
 
-<img src="D:/wechat/WeChat%20Files/wxid_kmz6nsf4osqv22/FileStorage/Temp/b907c339445c627402456066ec711c2.png" alt="b907c339445c627402456066ec711c2" style="zoom:80%;" />
-
 - **简述与使用**
 
 **一般程序**
@@ -1206,7 +1200,7 @@ mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 ||
 estat ic
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222201824007.png" alt="image-20231222201824007" style="zoom: 40%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231439414.png" alt="image-20231223143914328" style="zoom:50%;" />
 
 <img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150213.png" alt="image-20231222202012907" style="zoom:40%;" />
 
@@ -1356,7 +1350,7 @@ logistic 被解释变量 解释变量1 解释变量2 解释变量3 c.年份变�
 // 逐步考虑时间效应，若模型二效果好则选二，模型三效果好则选三，以显著性为标准。
 ```
 
-<img src="D:/wechat/WeChat%20Files/wxid_kmz6nsf4osqv22/FileStorage/Temp/233aa8e616251ffe795c85e2272e039.png" alt="233aa8e616251ffe795c85e2272e039" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231439248.png" alt="image-20231223143951163" style="zoom: 67%;" />
 
 据上图所示，在不考虑时间效应的情况下，所有变量所对应的p值都=0.000<0.01，在1%的水平下显著，且都具有正效应，其中第三个变量会导致时间发生的概率提升20%。
 
@@ -1414,7 +1408,7 @@ stcox 解释变量1 解释变量2 解释变量3,r nohr nolog
 stcurve, hazard
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222162133460.png" alt="image-20231222162133460" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231440950.png" alt="image-20231223144019859" style="zoom:67%;" />
 
 从上图看出，Cox PH模型回归结果中protect变量p值为0.000<0.01，在1%的水平下显著呈负效应，说明穿戴防护装置会导致老年人骨折的风险降低 41.94%，在10%的水平下年龄上升会导致骨折风险的增加，血钙的增加会降低骨折风险，但不显著。 且Cox PH不依赖于具体的分布假设，故结果更稳健。
 
@@ -1428,7 +1422,7 @@ stcurve, hazard
 stphplot, by(分组变量)
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222170242685.png" alt="image-20231222170242685" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231440456.png" alt="image-20231223144048358" style="zoom:50%;" />
 
 若两条曲线大致是平行的，则满足比例风险假定。
 
@@ -1619,7 +1613,7 @@ estat hettest 解释变量1 解释变量2，iid rhs
 estat imtest,white
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231221230022505.png" alt="image-20231221230022505" style="zoom:60%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231442142.png" alt="image-20231223144255046" style="zoom:67%;" />
 
 只需要看上半部分，IM-test不关心。Prob>卡方对应的p值为0.0000<0.05，拒绝原假设，**认为存在异方差**。
 
@@ -1676,7 +1670,7 @@ pac e1
 
 按上图显示**斜率为正**则可判定可能存在一定自相关 。
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222013042258.png" alt="image-20231222013042258" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231441410.png" alt="image-20231223144154318" style="zoom:50%;" />
 
 <img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230151946.png" alt="image-20231222013101756" style="zoom:50%;" />
 
@@ -1745,7 +1739,7 @@ prais 被解释变量 解释变量1 解释变量2 解释变量3,corc
 graph matrix 被解释变量 解释变量1 解释变量2 解释变量3 ,half
 ```
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222015435581.png" alt="image-20231222015435581" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231443884.png" alt="image-20231223144326767" style="zoom:50%;" />
 
 在上图如果看出两个变量之间存在较强的线性相关，则可以判断可能会产生多重共线性问题。
 
@@ -1902,7 +1896,7 @@ reg 被解释变量 解释变量12 解释变量3
 >
 >3.控制变量（或干扰变量）：控制变量是指在控制所研究的解释变量和被解释变量之间的关系时，需要控制的可能具有影响的变量。例如，我们希望研究教育对收入的影响，但同时需要将一些其他因素（例如性别、年龄、工作经验等）视为控制变量。通过对这些变量进行控制，可以更准确地估计教育对收入的影响。
 
-<img src="C:/Users/Larrt/AppData/Roaming/Typora/typora-user-images/image-20231222021903631.png" alt="image-20231222021903631" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231443602.png" alt="image-20231223144355518" style="zoom:50%;" />
 
 由回归结果可知，多排放一万吨废水可以增长1289.178万元的GDP。从回归模型中可以推测，随机干扰项u中含有其他影响GDP的因素，比如一些更加环保的因素。从而产生遗漏变量问题，进而违反了经典OLS假设，怀疑有内生性问题。
 

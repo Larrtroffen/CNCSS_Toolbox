@@ -138,7 +138,7 @@
 
 #### 2.2.1 按测量水平分
 
-##### 2.2.1.1 定性性质变量
+##### 2.2.1.1 定性性质变量（**定类、定序**）
 
 - 定类变量**（Norminal Data）**
 
@@ -160,7 +160,7 @@
 
 <img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312232323330.png" alt="image-20231223232315279" style="zoom:67%;" />
 
-##### 2.2.1.2 定量性质变量
+##### 2.2.1.2 定量性质变量（**定距、定比**）
 
 - 定距变量**（Interval Data）**
 
@@ -310,7 +310,7 @@
 
 模型中其他解释变量（内源变量）无法解释的变量。**外部强加给模型的变量，所以叫外源变量。**
 
-##### 2.4.4.3 内生变量（Variables with Endogeneity）
+##### 2.4.4.3 内生变量（**Variables with Endogeneity**）
 
 内生性变量的存在可能会导致因果关系被错误地解释或估计。具体来说，对于一个方程式**Y=β0+β1X+ϵ，X是内生变量**，如果我们试图将**β1解释为“X对Y的因果影响”**，那么内生性问题可能会出现。内生性变量**可能会受到未观察到的其他变量（ϵ）的影响**，从而导致X和Y之间的关系被混淆或错误解释。
 
@@ -320,7 +320,7 @@
 
 
 
-##### 2.4.4.4 外生变量（Variables with Exogeneity）
+##### 2.4.4.4 外生变量（**Variables with Exogeneity**）
 
 外生性变量的存在不会导致因果关系的错误解释或估计。具体来说，对于一个方程式**Y=β0+β1X+ϵ，X是外生变量**，如果我们试图将**β1解释为“X对Y的因果影响”**，那么外生性变量的存在不会导致因果关系的错误解释。换句话说，**外生性变量不受到未观察到的其他变量的影响，因此我们可以更自信地将X的变化解释为导致Y的变化**。在实践中，外生性变量通常被认为是**独立于误差项（ϵ）**的，因此它们对因果关系的估计没有影响。
 
@@ -380,27 +380,90 @@
 
 ### 2.4 常见问题
 
-**高斯-马尔可夫定理的假设条件**是：
+#### 2.4.1 一般线性回归的基本假设
 
-- 线性于参数
-- 随机抽样
-- 解释变量的样本有波动
-- 零条件均值
-- 同方差性
+本节假设一般线性回归模型为
+$$
+Y=\beta_1x_1+\beta_2x_2+\epsilon
+$$
 
-#### 2.4.1 异方差问题
+- **线性性**
+
+$x_1$变动一个单位，$Y$相应变动一个单位，与$x_1$的绝对值无关。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312241611651.png" alt="image-20231224161145521" style="zoom:50%;" />
+
+如下图（安斯库姆四重奏，Anscombe’s quartet），线性模型拟合的指标基本一致，但数据分布却显然不同。其中一与三基本上符合线性性，但二明显不符合线性性，它不是线性分布。这提示了我们在模型估计之前先观察数据特征的重要性，在stata中可以使用如下代码观察各组数据的特征。
+
+```stata
+graph matrix 变量1 变量2 变量3 变量4 变量5
+```
+
+常见的不符合线性分布的数据是一些**二次分布、三次分布**（$x_1^2,x_2^3$等）的数据，如果观察到类似图二的数据分布，就不适合做线性模型回归了。
+
+- **可加性**
+
+$x_1$对$Y$的影响是独立于其他解释变量的（如$x_2$等）。
+
+不满足线性性和可加性会导致模型出现很大的泛化误差，从而影响模型估计的稳健性（可以理解为结果可信度）。
+
+- **误差项（ε）之间应相互独立**
+
+若不满足这一特性，我们称模型具有**自相关性**（Autocorrelation），自相关的判断可见[自相关的检验](#####6.1.2.3 自相关问题检验)。
+
+自相关(auto correlation)又称序列相关（serial correlation），即总体回归模型的随机扰动项之间存在相关关系。在经典线性回归模型中，无自相关假定为$Cov(u_i,j_i)=E(u_i,j_i)=0(i<>j)$
+
+自相关性经常发生于时间序列数据集上，**同一变量的后项会受到前项的影响**。当自相关性发生的时候，我们测得的标准差往往会**偏小**，进而会导致置信区间**变窄**。假设没有自相关性的情况下，自变量$x_1$的系数为10而标准差为2。假设同一样本是有自相关性的，测得的标准差可能会只有1，所以置信区间也会从(8,12)缩小到(9,11)。
+
+可以这样理解：比如你拿CPI等一些指数做解释变量时，后一期的CPI是以前一期作为基期的，假设前一期是110，后一期是100。你直接用这两个数据进行回归的话实际上是不准确的，因为如果要想让这两个变量可比的话，需要指定一个基期，如指定前一期为基期的话，后一期的相对可比值就是110而不是100，这样受前一期的影响程度就会降低，模型更加可信。
+
+- **自变量（x1，x2）之间应相互独立**
+
+若不满足这一特性，我们称模型具有**多重共线性性**（Multicollinearity）。
 
 
 
-#### 2.4.2 自相关问题
 
 
 
-#### 2.4.3 多重共线性问题
+
+- **误差项（ε）的方差应为常数**
+
+若满足这一特性，我们称模型具有**同方差性**（Homoskedasticity），若不满足，则为**异方差性**（Heteroskedasticity）。
 
 
 
-#### 2.4.4 内生性问题
+
+
+- **误差项（ε）应呈正态分布**
+
+
+
+
+
+
+
+
+
+#### 2.4.2 异方差问题
+
+
+
+
+
+
+
+
+
+#### 2.4.3 自相关问题
+
+
+
+#### 2.4.4 多重共线性问题
+
+
+
+#### 2.4.5 内生性问题
 
 内生性（Endogeneity）在计量经济学中广泛指代**解释变量与扰动项相关**的现象。忽略内生性问题会违背高斯-马尔可夫定理，导致产生有偏的估计量，以及无效的政策建议。
 
@@ -1054,7 +1117,7 @@ reghdfe 被解释变量 解释变量1 解释变量2 解释变量3, absorb(面板
 
 针对个体固定效应（原假设：不存在个体固定效应）的F检验自动生成（最后一行），此处F检验对应的p值为0.0000，表示个体固定效应显著。　
 
-**笨方法**
+**LSDV**
 
 ```stata
 xi:xtreg 被解释变量 解释变量1 解释变量2 解释变量3 i.面板变量,fe 
@@ -1081,7 +1144,7 @@ reghdfe 被解释变量 解释变量1 解释变量2 解释变量3, absorb(年份
 
 针对时间固定效应（原假设：不存在时间固定效应）的F检验自动生成（最后一行），此处F检验对应的p值为0.0000，表示时间固定效应显著。　
 
-**笨方法**
+**LSDV**
 
 ```stata
 xi:reg 被解释变量 解释变量1 解释变量2 解释变量3 i.时间变量
@@ -1447,49 +1510,209 @@ synth 被解释变量 解释变量1 解释变量2 解释变量3 解释变量4 �
 
 #### 5.4.1 多层线性模型（HLM/MLM）
 
+又称：**多水平线性模型 （multilevel linear model）、混合效应模型（mixed-effects model）、随机效应模型（random-effect  model）、随机系数回归模型（random-coefficient regression model）和协方差成分模型 （covariance components model）**
+
 所谓“分层”就是通过多个线性模型，将**数据的高低/大小/内外关系**展现出来。举个栗子，如果我们想使用CEPS中国教育追踪调查数据，研究影响学生学业成绩的因素，由于CEPS包含了来自学生、班级、学校不同层面的各种调查内容，我们会很自然地想使用OLS回归建立一个关于学业成绩的回归方程，这个方程将纳入**学生、班级、学校等层面的控制变量**，但这样做可能存在一个问题：**同一个班级学生学业成绩的相关度可能比不同班级学生学业成绩的相关度大，因为他们身处同样的班级教育环境；同一个学校学生学业成绩的相关度可能比不同学校学生学业成绩的相关度大，因为院校可能在入学时对学生进行了筛选，且同一个学校奉行同样的办学理念等**。虽然使用OLS回归时可以使用cluster(group)进行分组减少偏差，但面对**更多的层级和更为复杂的影响因素（尤其是在不同层面上影响因素不同）**时，使用**HLM分层线性模型**就展现出了优越性。
 
 - **典型数据结构辨识**
 
-有很多的**可分组**的变量，尤其是一些客观条件、环境上**容易带来显著异质性的变量**，作为**控制变量**。比如下图想要考察努力程度与绩点的关系，控制变量有宿舍、班级和年级。
+有很多的**可分组**的变量，尤其是一些客观条件、环境上**容易带来显著异质性的变量**。分组的变量之间可以相互嵌套（分层）。比如我想要考察GDP和产业结构的关系，基础的记录以市为单位，上一级则是省，再上一级则是国家。
+
+![image-20231225122547130](https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251225322.png)
+
+多层数据违背了传统回归分析模型的**残差相互独立假设**，导致其得到的标准误估计不正确（太小）。
+
+由知乎用户[包寒吴霜](https://www.zhihu.com/people/psychbruce)的例子，我们来更好地理解一下这个模型的重要思想：
+
+**智力水平（IQ）能否影响学业成绩（GPA）？**他放在了包含学校这一层差异的个体数据中考察。
+
+```stata
+reg GPA IQ
+```
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251236745.webp" alt="img" style="zoom:50%;" />
+
+普通线性回归拟合后结果：IQ对GPA没有显著影响，甚至还有负相关（？）。事实上，在这里没有考虑到学校之间的不同，我们分别进行回归可得结果：
+
+```stata
+* 多层线性回归
+mixed GPA IQ || school:,mle variance nostderr nolog
+* 假设模型是GPA=aIQ+b，则下图中不同学校的b值不同（随机截距），a值一致（固定斜率）。
+```
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251240148.webp" alt="img" style="zoom:67%;" />
+
+在这里，我们可以观察到显著的结果：IQ与GPA呈正相关，IQ越高，GPA越高（开个玩笑，数据是作者生成的）。以上就是经典的**“组内同质、组间异质”**的情况，我们刚刚做的其实就可以视为HLM的其中一种子模型——**随机截距-固定斜率模型**，也就是假定**不同学校的基线水平不同（随机截距）**，但**IQ与GPA之间的变量关系在不同学校中保持相同（固定斜率）**。
+
+下面的组图来演示一下随机截距、随机斜率+随机截距。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251248683.webp" alt="img" style="zoom:50%;" />
+
+此图为随机斜率-截距模型，即不同的组别间**（Group1、Group2）**拟合的方程斜率不同，往往随机斜率不会单独出现，一般都在随机截距-斜率模型下出现。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251256903.jpeg" alt="img" style="zoom:50%;" />
+
+此图为随机截距模型，即不同的组别间**（Group1、Group2）**拟合的方程截距不同，但斜率相同（斜率固定效应）。
+
+由此，我们可以更好地理解**固定效应、随机效应**到底是怎么回事了 ，同时能够更好地理解**面板数据模型和分层回归模型**的适用性。
+
+![image-20231225151234705](https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251512800.png)
+
+| 模型         | **固定截距（组间基线水平）**                                 | **随机截距**                                                 | **固定斜率（组间效应水平）** | **随机斜率**      |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------- | ----------------- |
+| 面板数据模型 | 个体固定效应模型中时间截距固定<br />时间固定效应模型中个体截距固定<br />双向固定效应模型中都不固定 | 个体固定效应模型中个体截距随机<br />时间固定效应模型中时间截距随机<br />双向固定效应模型中都随机 | 固定效应模型默认             | 随机效应模型      |
+| 分层回归模型 | 不存在                                                       | 随机截距模型默认按照分层变量随机                             | 随机截距模型默认固定斜率     | 随机斜率-截距模型 |
+
+下面我们来做一做选择题**（每道问题五选一）**！（参考于知乎用户用户名HAO）
+
+- **5个可选模型们：**
+
+1. **模型A：普通回归，1截距，1斜率（一般回归）**
+2. **模型B：普通回归，K截距，1斜率（固定效应模型）**
+3. **模型C：普通回归，K截距，K斜率（随机效应模型）**
+4. **模型D：多层模型，随机截距，1斜率 （随机截距模型）**
+5. **模型E：多层模型，随机截距，随机斜率（随机截距-斜率模型）**
+
+- **情景1：**
+
+研究员1**不希望将结论泛化到他的数据中不包括的群体**。ICC = 0.6，显著。研究员1对不同组中X和Y的关系感兴趣。共有10个小组，每组大约有250个案例。
+
+- **情景2：**
+
+研究者2想知道外向性是否对绩效有积极影响(在员工层面上)。研究员2的样本包括20家不同的公司，每家公司大约有30名员工。她希望将结果**应用于更广的群体**。ICC = 0.2，显著。
+
+- **情景3：**
+
+研究员3收集了80人的数据（4人一组），这20组人被分配到2种实验情境（每个情境10组）。他的主要兴趣是**实验情境对个人表现的影响**。ICC=0.35，显著。
+
+- **情景4：**
+
+研究员4从23个班级中收集个人数据，每班平均有25名学生。她想研究**学生的成绩是否受到每班男女比例的影响**。
+
+- **情景5：**
+
+研究人员5从与他有联系的11家公司收集了1.2万人的数据。他希望研究**工作负荷和工作满意度之间的关系，以及这种关系在这些公司之间是否存在差异**。
+
+- **判断标准&参考答案：**
+
+- 情景1： **b或c**
+
+研究员1不希望将结论泛化到他的数据中不包括的群体**（样本角度：传统模型）**。ICC = 0.6，显著**（样本角度：需要考虑组间相关性，多层和k截距都适用）**。研究员1对不同组中X和Y的关系感兴趣**（研究问题角度：传统固定效应模型，因为感兴趣的是不同组中X对Y的关系，且不涉及分组对Y的影响；又因为没说是不同组中X对Y的“不同”关系，所以传统固定效应模型或传统随机效应模型斜率均可）**。共有10个小组，每组大约有250个案例**（统计角度：传统模型适用，多层模型的话组数不够）**。
+
+- 情景2： **d**
+
+研究者2想知道外向性是否对绩效有积极影响(在员工层面上)**（研究问题角度：传统模型即可）**。研究员2的样本包括20家不同的公司，每家公司大约有30名员工（**样本角度：组数勉强够用来作多层模型；组内样本量小，不适合估计自由影响即随机斜率的情况，可以用固定效应模型、随机截距模型）**。她希望将结果应用于更广的群体**（研究问题角度：倾向于多层模型**）。ICC = 0.2，显著**（样本角度：组间相依，需要多层模型/k截距传统模型）**。（统计角度：有效样本量小不适合随机斜率，Neff = 20* 30/（1+.2*(30-1)) = 88)。
+
+- 情景3：**d**
+
+研究员3收集了80人的数据（4人一组），这20组人被分配到2种实验情境（每个情境10组）（样本角度：并非从总体中随机抽样，不适合随机斜率）。他的主要兴趣是实验情境对个人表现的影响**（研究问题角度：涉及高层变量“实验情境”，需要用多层模型）**。ICC=0.35，显著**（样本角度：需要考虑组间相关性，用多层/k截距传统模型）**。（统计角度：有效样本量小不适合随机斜率，Neff = 2 * 40/ （1+.35*（40-1））= 5.46）。
+
+- 情景4：**d**
+
+研究员4从23个班级中收集个人数据，每班平均有25名学生**（统计角度：组数相对多，组内样本量小，固定截距传统模型/随机斜率多层模型不适用，选随机截距-斜率多层模型）**；。她想研究学生的成绩是否受到每班男女比例的影响**（研究问题角度：涉及高层变量，需要多层模型）**。 **（样本角度：不明）**
+
+- 情景5：**c**
+
+研究人员5从与他有联系的11家公司收集了1.2万人的数据**（统计角度：传统模型均适用，多层模型的话组数不太够）**。他希望研究工作负荷和工作满意度之间的关系**（研究问题角度：不涉及高层变量，传统模型即可）**，以及这种关系在这些公司之间是否存在差异**（研究问题角度：“这种关系在公司之间是否存在差异”，k截距k斜率传统模型和自由斜率的多层模型都可；“在这些公司之间”，传统模型即可）**。
+
+相信你在这题之后，**会对整套量化的基本范式有更成熟的了解！**
 
 - **简述与使用**
 
 **一般程序**
 
->1.建立零模型，判断是否要使用HLM。
+>1.建立零模型，判断是否要使用HLM
 >
->2.建立随机截距和随机截距-斜率模型。
+>2.计算组间相关系数（ICC），进一步判决
 >
->3.根据IC选择模型。
+>3.建立只含时间因素的随机截距模型（若有时间变量）
+>
+>4.建立只含时间因素的随机截距-斜率模型（若有时间变量）
+>
+>5.纳入高水平解释变量的随机截距模型
+>
+>6.纳入高水平解释变量的随机截距-斜率模型
+>
+>6.加入协变量，控制混杂因素
+>
+>7.对比以上各个模型的信息准则（IC），根据结果及实际需要，选择最适合的模型
 
-**建立零模型和比较模型**
+**建立零模型**
 
 ```stata
-mixed 被解释变量 || 上层分组变量:,mle variance nostderr // 零模型
-mixed 被解释变量, mle variance nostderr // OLS模型
+mixed 被解释变量 || 上层分组变量:,mle variance nostderr nolog // 零模型
+* 分层线性模型最常用极大似然估计(MLE)计算协方差；nostderr和nolog是为了不输出稳健标准误表格和迭代记录，简化模型输出。
+estat icc
+mixed 被解释变量 || 上层分组变量: || 上上层分组变量:,mle variance nostderr nolog // 零模型
+estat icc
 ```
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150002.png" alt="image-20231222200553752" style="zoom:50%;" />
+下文我们将使用genderequality.dta数据集进行分析，考察女性是否工作对女性性别平等程度的影响。先将有可能产生组间差异的变量考虑进去，建立零模型。
 
-观察零模型语句后输出结果的最后一行，LR test vs. linear regression的卡方检验p值为0.0000<0.01，显著，推荐使用HLM。
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251404323.png" alt="image-20231225140407244" style="zoom:50%;" />
+
+在这里我们将观测样本点所在国家（country）考虑了进去。先看下方LR test结果，**p值为0.000<0.01**，显著拒绝原假设（分层线性回归模型和一般线性回归模型无差别），**认为应当选择分层线性回归模型**。再观测ICC：
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251404930.png" alt="image-20231225140427874" style="zoom:50%;" />
+
+这是在州层面上（第二层）的组内相关系数，表示相同国家中性别平等程度潜在测量值之间的相关性。在这里可以看出ICC=0.185>**0.138（公认的判断值）**，认为组间差距较大，应当使用分层线性回归模型。
 
 **建立随机截距模型**
 
 ```stata
-mixed 被解释变量 解释变量 || 上层分组变量:, mle variance nostderr // 随机截距
-estat ic // 使用AIC和BIC评价选择模型
-mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量:, mle variance nostderr // 带控制变量的随机截距
+mixed 被解释变量 解释变量 || 上层分组变量:, mle variance nolog// 随机截距
+estat ic // 使用信息准则评价选择模型
+mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量:, mle variance nolog // 带控制变量的随机截距
+estat ic
+mixed 被解释变量 解释变量1 上层解释变量 控制变量1 控制变量2 || 上层分组变量: 上层解释变量, mle variance nolog
 estat ic
 ```
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150212.png" alt="image-20231222202225379" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251435981.png" alt="image-20231225143524907" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150575.png" alt="image-20231222203216928" style="zoom:67%;" />
+```stata
+mixed equality employed if female==1 || country: ,mle variance nostderr nolog
+```
 
-**每次跑一个模型出来之后就跑一下这张表，比较各个模型AIC的大小，AIC越小的越好。**
+上图是在以国家为第二层变量的随机截距的情况下，女性（if female==1）性别平等程度（equality）与是否工作（employed）的分层线性回归结果，是否工作所对应的p值为0.000>0.01，能够在1%的显著性下解释它对性别平等程度的正向效应，此模型的图示如下：
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150448.png" alt="image-20231222202204317" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251440328.png" alt="image-20231225144038256" style="zoom:67%;" />
+
+下图是AIC。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251507952.png" alt="image-20231225150718887" style="zoom:50%;" />
+
+为更加稳健地解释这一效应，我们将添加部分控制变量去更加稳健地解释被解释变量和解释变量间的关系。
+
+```stata
+mixed equality employed education income married if female==1 || country: ,mle variance nolog
+```
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251409913.png" alt="image-20231225140945820" style="zoom:50%;" />
+
+上图是在添加了受教育程度、收入、是否结婚的控制变量，以国家为第二层变量的随机截距的情况下，女性（if female==1）性别平等程度（equality）与是否工作（employed）的分层线性回归结果，是否工作所对应的p值为0.000>0.01，能够在1%的显著性下解释它对性别平等程度的正向效应，此模型的图示如下：
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251442229.png" alt="image-20231225144211131" style="zoom: 50%;" />
+
+我们对比这两个模型的信息准则（IC），结果如下：
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251411932.png" alt="image-20231225141128871" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251411209.png" alt="image-20231225141150148" style="zoom:50%;" />
+
+第二个模型的AIC较第一个模型小，说明其能够更好地解释解释变量与被解释变量的关系，具有更好的信息表现，但我们发现它的N不一致，可能AIC无法作为可比的量，在这时我们可以将数据进行预处理（去掉有缺失值的观测），能够得到更稳健的IC结果。总之，**每次跑一个模型出来之后就跑一下这张表，比较各个模型AIC的大小，AIC越小的越好（在观测量N相等的情况下）。**
+
+当然，我们还可以引入国家水平的自变量来对国家间的女性性别平等程度差异进行解释，比如总体不平等程度（inequality）女性劳动者比例（femalelabor）等。这些变量由于**只在**国家层面变化，对于每个国家内的每一个观测个体而言都**只有**一种可能的取值，因此必须放在**第二层**的方程中作为群体水平自变量，而不能简单地处理为个体水平自变量——这也就是HLM的另一个存在的意义：**可以同时纳入分析个体与群体水平的自变量**。
+
+```stata
+mixed equality employed femalelabor if female==1 || country: femalelabor ,mle nolog
+```
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251434540.png" alt="image-20231225143415421" style="zoom:50%;" />
+
+上图我们添加了国家层面上不同的变量：女性劳动者比例（femalelabor），考察了女性（if female==1）性别平等程度（equality）、是否工作（employed）与女性劳动者比例（femalelabor）之间的关系，是否工作（employed）与女性劳动者比例（femalelabor）对应的p值都是0.000<0.01，显著表明它们都对女性性别平等程度有正向效应。此模型的图示如下：
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251443904.png" alt="image-20231225144334832" style="zoom:50%;" />
 
 **建立随机斜率-截距模型**
 
@@ -1502,11 +1725,31 @@ mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 ||
 estat ic
 ```
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312231439414.png" alt="image-20231223143914328" style="zoom:50%;" />
+由上，按顺序将模型输出一遍：
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150213.png" alt="image-20231222202012907" style="zoom:40%;" />
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251458637.png" alt="image-20231225145819554" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312230150527.png" alt="image-20231222201938775" style="zoom:40%;" />
+上图是在以国家为第二层变量的随机斜率-截距的情况下，女性（if female==1）性别平等程度（equality）与是否工作（employed）的分层线性回归结果，是否工作所对应的p值为0.000>0.01，能够在1%的显著性下解释它对性别平等程度的正向（0.2083）效应。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251500884.png" alt="image-20231225150019814" style="zoom:50%;" />
+
+如上图所示，观察AIC，我们可以与随机截距模型的AIC进行对比，29438.64>29434.64，不如随机截距模型，但差距不大，可以忽视。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251500071.png" alt="image-20231225150051981" style="zoom:50%;" />
+
+上图是在添加了受教育程度、收入、是否结婚的控制变量，以国家为第二层变量的随机斜率-截距的情况下，女性（if female==1）性别平等程度（equality）与是否工作（employed）的分层线性回归结果，是否工作所对应的p值为0.000>0.01，能够在1%的显著性下解释它对性别平等程度的正向效应。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251502354.png" alt="image-20231225150203284" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251502296.png" alt="image-20231225150246203" style="zoom:50%;" />
+
+上图我们添加了国家层面上不同的变量：女性劳动者比例（femalelabor），考察了女性（if female==1）性别平等程度（equality）、是否工作（employed）与女性劳动者比例（femalelabor）之间的关系，是否工作（employed）与女性劳动者比例（femalelabor）对应的p值都是0.000<0.01，显著表明它们都对女性性别平等程度有正向效应。
+
+<img src="https://raw.githubusercontent.com/Larrtroffen/Stata_Guidebook/main/pic/202312251503563.png" alt="image-20231225150315492" style="zoom:50%;" />
+
+上图是AIC。
+
+尽管观察信息准则量可以判断更好的模型，但在stata中往往不是很常用，只用分步列出来就可以了，**主要还是为了实现你自己的研究目的（上面的那些选择题）**。HLM有专门的计算软件HLM，可以更好地估计多层线性模型。
 
 **更多层的随机斜率-截距模型**
 
@@ -1520,24 +1763,32 @@ mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 ||
 #### **多层线性模型代码的整理**
 
 ```stata
-* 评估
-mixed 被解释变量 || 上层分组变量:,mle variance nostderr // 零模型
-mixed 被解释变量, mle variance nostderr // OLS模型
-* 随机截距
-mixed 被解释变量 解释变量 || 上层分组变量:, mle variance nostderr // 随机截距
-estat ic // 使用AIC和BIC评价选择模型
-mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量:, mle variance nostderr // 带控制变量的随机截距
+*==========================================*
+*                零模型建立                  *
+*==========================================*
+mixed 被解释变量 || 上层分组变量:,mle variance nostderr nolog // 零模型
+* 分层线性模型最常用极大似然估计(MLE)计算协方差；nostderr和nolog是为了不输出稳健标准误表格和迭代记录，简化模型输出。
+estat icc
+*==========================================*
+*              随机截距模型                  *
+*==========================================*
+mixed 被解释变量 解释变量 || 上层分组变量:, mle variance nolog// 随机截距
+estat ic // 使用信息准则评价选择模型
+mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量:, mle variance nolog // 带控制变量的随机截距
 estat ic
-* 随机斜率-截距
+mixed 被解释变量 解释变量1 上层解释变量 控制变量1 控制变量2 || 上层分组变量: 上层解释变量, mle variance nolog
+estat ic
+*==========================================*
+*             随机斜率-截距模型               *
+*==========================================*
 mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量: 解释变量1, covariance(unstructured) mle variance nostderr nolog // x1随机斜率+截距
 estat ic
 mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量: 解释变量2, covariance(unstructured) mle variance nostderr nolog // x2随机斜率+截距
 estat ic
-mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量: 解释变量1 解释变量2, covariance(unstructured) mle variance nostderr nolog // x1、x2随机斜率+截距
+mixed 被解释变量 解释变量1 上层解释变量 控制变量1 控制变量2 || 上层分组变量: 上层解释变量, covariance(unstructured) mle variance nostderr nolog // x1、x2随机斜率+截距
 estat ic
-// 下面别管
 mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量: || 上上层分组变量: , covariance(unstructured) mle variance nostderr nolog 
-mixed 被解释变量 解释变量1 解释变量2 控制变量1 控制变量2 || 上层分组变量: 解释变量1 || 上上层分组变量: 解释变量2 , covariance(unstructured) mle variance nostderr nolog 
+mixed 被解释变量 解释变量1 解释变量2 上层解释变量 上上层解释变量 || 上层分组变量: 上层解释变量 || 上上层分组变量: 上上层解释变量 , covariance(unstructured) mle variance nostderr nolog 
 ```
 
 ### 5.5 事件研究法（ESM）

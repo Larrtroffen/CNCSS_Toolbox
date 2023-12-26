@@ -20,3 +20,5 @@ By ShanDong University & University of Chinese Academy of Social Sciences
 附件文件夹：main/appexdix/，其中包含一些较为权威的参考资料与教程，仅供学习使用，请在下载后48小时内删除。
 
 数据文件夹：main/dataset/，其中包含一些我个人所收集的数据集，供练习使用。
+
+在此我对另一个repo进行推介：由tessam30创建的[Stata可视化练习库](https://geocenter.github.io/StataTraining/)，我将逐渐对其进行整理与翻译，供大家参看。

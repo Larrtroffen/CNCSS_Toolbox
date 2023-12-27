@@ -4,7 +4,7 @@
 
 
 
-By ShanDong University & University of Chinese Academy of Social Sciences
+By ShanDong University 
 
 专为文科量化实证研究苦手打造
 
